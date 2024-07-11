@@ -194,6 +194,7 @@ enum env_location env_get_location(enum env_operation op, int prio)
 int board_init(void)
 {
 	__maybe_unused int id_pfr1, ret;
+	struct udevice *dev;
 
 	gd->bd->bi_boot_params = (PHYS_SDRAM_0 + 0x100);
 
@@ -229,6 +230,9 @@ int board_init(void)
 	ret = axp_gpio_init();
 	if (ret)
 		return ret;
+
+	if (CONFIG_IS_ENABLED(USB_GADGET))
+		uclass_get_device(UCLASS_USB_GADGET_GENERIC, 0, &dev);
 
 	eth_init_board();
 
