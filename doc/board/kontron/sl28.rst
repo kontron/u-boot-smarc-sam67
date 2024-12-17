@@ -16,7 +16,7 @@ Compile U-Boot
 Configure and compile the binary::
 
  $ make kontron_sl28_defconfig
- $ CROSS_COMPILE=aarch64-linux-gnu make
+ $ CROSS_COMPILE=aarch64-linux-gnu- make
 
 Copy u-boot.rom to a TFTP server.
 
