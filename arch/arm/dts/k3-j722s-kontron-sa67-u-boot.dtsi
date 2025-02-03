@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Copyright (c) 2025 Kontron Europe GmbH
+ */
+
+#include "k3-j722s-kontron-sa67-binman.dtsi"
+
+/ {
+	chosen {
+		tick-timer = &main_timer0;
+	};
+};
+
+&dmsc {
+	bootph-pre-ram;
+};
