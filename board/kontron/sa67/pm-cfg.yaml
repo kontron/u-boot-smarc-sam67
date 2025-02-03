@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: GPL-2.0+
+#
+# Power management configuration for Kontron SMARC-sAM67
+#
+# Copyright (c) 2024 Texas Instruments Incorporated - https://www.ti.com/
+# Copyright (c) 2025 Kontron Europe GmbH
+#
+
+---
+
+pm-cfg:
+    rev:
+        boardcfg_abi_maj: 0x0
+        boardcfg_abi_min: 0x1
