@@ -62,7 +62,7 @@
 
 #if IS_ENABLED(CONFIG_TARGET_SA67_A53)
 
-#define SPL_KONTRON_SA67_DTB "spl/dts/ti/k3-j722s-kontron-sa67.dtb"
+#define SPL_KONTRON_SA67_DTB "spl/dts/k3-j722s-kontron-sa67.dtb"
 #define KONTRON_SA67_DTB "u-boot.dtb"
 
 &binman {
