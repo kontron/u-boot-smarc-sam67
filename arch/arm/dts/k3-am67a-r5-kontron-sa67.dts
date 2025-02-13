@@ -6,7 +6,7 @@
 #include "k3-am67a-kontron-sa67.dts"
 #include "k3-am67a-kontron-sa67-u-boot.dtsi"
 
-#include "k3-j722s-ddr-lp4-50-4000.dtsi"
+#include "k3-am67a-kontron-sa67-ddr-mt53e2g32d4de.dtsi"
 #include "k3-am62a-ddr.dtsi"
 
 / {
