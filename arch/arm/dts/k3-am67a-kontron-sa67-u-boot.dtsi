@@ -3,7 +3,7 @@
  * Copyright (c) 2025 Kontron Europe GmbH
  */
 
-#include "k3-j722s-kontron-sa67-binman.dtsi"
+#include "k3-am67a-kontron-sa67-binman.dtsi"
 
 / {
 	chosen {
