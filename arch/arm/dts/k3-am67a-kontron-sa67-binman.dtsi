@@ -62,7 +62,7 @@
 
 #if IS_ENABLED(CONFIG_TARGET_SA67_A53)
 
-#define SPL_KONTRON_SA67_DTB "spl/dts/k3-j722s-kontron-sa67.dtb"
+#define SPL_KONTRON_SA67_DTB "spl/dts/k3-am67a-kontron-sa67.dtb"
 #define KONTRON_SA67_DTB "u-boot.dtb"
 
 &binman {
@@ -92,7 +92,7 @@
 				};
 
 				fdt-0 {
-					description = "k3-j722s-kontron-sa67";
+					description = "k3-am67a-kontron-sa67";
 					type = "flat_dt";
 					arch = "arm";
 					compression = "none";
@@ -114,7 +114,7 @@
 				default = "conf-0";
 
 				conf-0 {
-					description = "k3-j722s-kontron-sa67";
+					description = "k3-am67a-kontron-sa67";
 					firmware = "atf";
 					loadables = "tee", "dm", "spl";
 					fdt = "fdt-0";
@@ -135,17 +135,17 @@
 				};
 
 				fdt-0 {
-					description = "k3-j722s-kontron-sa67";
+					description = "k3-am67a-kontron-sa67";
 					type = "flat_dt";
 					arch = "arm";
 					compression = "none";
 
 					ti-secure {
-						content = <&j722s_kontron_sa67_dtb>;
+						content = <&am67a_kontron_sa67_dtb>;
 						keyfile = "custMpk.pem";
 					};
 
-					j722s_kontron_sa67_dtb: blob-ext {
+					am67a_kontron_sa67_dtb: blob-ext {
 						filename = KONTRON_SA67_DTB;
 					};
 
@@ -159,7 +159,7 @@
 				default = "conf-0";
 
 				conf-0 {
-					description = "k3-j722s-kontron-sa67";
+					description = "k3-am67a-kontron-sa67";
 					firmware = "uboot";
 					loadables = "uboot";
 					fdt = "fdt-0";
