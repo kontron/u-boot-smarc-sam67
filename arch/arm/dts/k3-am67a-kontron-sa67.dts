@@ -48,7 +48,7 @@
 	};
 
 	chosen {
-		stdout-path = "serial0:115200";
+		stdout-path = "serial1:115200n8";
 	};
 
 	clk_12mhz: clock-12000000 {
