@@ -3,8 +3,8 @@
  * Copyright (c) 2025 Kontron Europe GmbH
  */
 
-#include "k3-j722s-kontron-sa67.dts"
-#include "k3-j722s-kontron-sa67-u-boot.dtsi"
+#include "k3-am67a-kontron-sa67.dts"
+#include "k3-am67a-kontron-sa67-u-boot.dtsi"
 
 #include "k3-j722s-ddr-lp4-50-4000.dtsi"
 #include "k3-am62a-ddr.dtsi"
@@ -13,8 +13,7 @@
 	aliases {
 		remoteproc0 = &sysctrler;
 		remoteproc1 = &a53_0;
-		serial0 = &wkup_uart0;
-		serial2 = &main_uart0;
+		//serial0 = &wkup_uart0;
 	};
 
 	a53_0: a53@0 {
