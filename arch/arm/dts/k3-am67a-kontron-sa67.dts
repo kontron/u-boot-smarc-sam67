@@ -268,13 +268,13 @@
 };
 
 &cpsw_port1 {
-	phy-mode = "rgmii-rxid";
+	phy-connection-type = "rgmii-id";
 	phy-handle = <&phy0>;
 	status = "okay";
 };
 
 &cpsw_port2 {
-	phy-mode = "rgmii-rxid";
+	phy-connection-type = "rgmii-id";
 	phy-handle = <&phy1>;
 	status = "okay";
 };
