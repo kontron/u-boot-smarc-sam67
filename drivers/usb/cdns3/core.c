@@ -447,6 +447,7 @@ fail:
 	return 0;
 }
 
+#if CONFIG_IS_ENABLED(USB_CDNS3_GADGET)
 #if CONFIG_IS_ENABLED(DM_USB_GADGET)
 static int cdns3_gadget_probe(struct udevice *dev)
 {
@@ -498,6 +499,7 @@ int dm_usb_gadget_handle_interrupts(struct udevice *dev)
 
 	return 0;
 }
+#endif
 #endif
 
 #if defined(CONFIG_SPL_USB_HOST) || \
