@@ -358,14 +358,6 @@
 		};
 	};
 
-	rtc: rtc@32 {
-		compatible = "microcrystal,rv8263";
-		reg = <0x32>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&rtc_pins_default>;
-		interrupts-extended = <&main_gpio0 36 IRQ_TYPE_LEVEL_LOW>;
-	};
-
 	tps652g1: pmic@48 {
 		compatible = "ti,tps652g1";
 		reg = <0x48>;
@@ -448,9 +440,9 @@
 		};
 	};
 
-	system-controller@4a {
+	system-controller@50 {
 		compatible = "kontron,sa67uc", "kontron,sl28cpld";
-		reg = <0x4a>;
+		reg = <0x50>;
 		#address-cells = <1>;
 		#size-cells = <0>;
 
@@ -459,6 +451,14 @@
 			reg = <0x4>;
 			kontron,assert-wdt-timeout-pin;
 		};
+	};
+
+	rtc: rtc@51 {
+		compatible = "microcrystal,rv8263";
+		reg = <0x51>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&rtc_pins_default>;
+		interrupts-extended = <&main_gpio0 36 IRQ_TYPE_LEVEL_LOW>;
 	};
 };
 
@@ -934,7 +934,7 @@
 	flash@0 {
 		compatible = "jedec,spi-nor";
 		reg = <0>;
-		spi-max-frequency = <133000000>;
+		spi-max-frequency = <104000000>;
 		spi-rx-bus-width = <2>;
 		spi-tx-bus-width = <2>;
 		m25p,fast-read;
