@@ -133,4 +133,11 @@ config RNG_EXYNOS
 	  case the LDFW (Loadable Firmware) has to be loaded first, as it
 	  actually implements TRNG SMC calls.
 
+config RNG_OMAP
+	bool "OMAP Random Number Generator support"
+	depends on ARCH_K3
+	help
+	  Enable True Random Number Generator found on K3 family and similar
+	  SoCs.
+
 endif
