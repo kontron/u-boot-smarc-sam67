@@ -12,6 +12,7 @@
 #include <env.h>
 #include <fdt_support.h>
 #include <spl.h>
+#include <asm/arch/k3-ddr.h>
 
 int board_init(void)
 {
@@ -20,7 +21,7 @@ int board_init(void)
 
 int dram_init(void)
 {
-	return fdtdec_setup_mem_size_base();
+	return fdtdec_setup_mem_size_base_lowest();
 }
 
 int dram_init_banksize(void)
@@ -32,5 +33,12 @@ int dram_init_banksize(void)
 int board_late_init(void)
 {
 	return 0;
+}
+#endif
+
+#if IS_ENABLED(CONFIG_XPL_BUILD)
+void spl_perform_fixups(struct spl_image_info *spl_image)
+{
+	fixup_memory_node(spl_image);
 }
 #endif
