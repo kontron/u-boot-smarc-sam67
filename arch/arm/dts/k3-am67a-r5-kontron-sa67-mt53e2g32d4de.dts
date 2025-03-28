@@ -1,0 +1,17 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Copyright (c) 2025 Kontron Europe GmbH
+ */
+
+#include "k3-am67a-kontron-sa67-ddr-mt53e2g32d4de.dtsi"
+#include "k3-am67a-r5-kontron-sa67.dtsi"
+
+/ {
+	model = "Kontron SMARC-sAM67 (8GiB)";
+};
+
+&memory {
+	/* 8G RAM */
+	reg = <0x00000000 0x80000000 0x00000000 0x80000000>,
+	      <0x00000008 0x80000000 0x00000001 0x80000000>;
+};
