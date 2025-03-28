@@ -31,7 +31,6 @@ int dram_init_banksize(void)
 #if IS_ENABLED(CONFIG_BOARD_LATE_INIT)
 int board_late_init(void)
 {
-//	ti_set_fdt_env(NULL, NULL);
 	return 0;
 }
 #endif
