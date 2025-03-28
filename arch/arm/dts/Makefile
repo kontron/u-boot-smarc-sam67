@@ -1094,9 +1094,10 @@ dtb-$(CONFIG_SOC_K3_J784S4) += k3-am69-r5-sk.dtb \
 			       k3-j784s4-r5-evm.dtb
 
 dtb-$(CONFIG_SOC_K3_J722S) += k3-j722s-r5-evm.dtb \
-			      k3-am67a-r5-beagley-ai.dtb
-			      k3-am67a-r5-kontron-sa67.dts \
-			      k3-am67a-kontron-sa67.dts
+			      k3-am67a-r5-beagley-ai.dtb \
+			      k3-am67a-r5-kontron-sa67-mt53e256m32d1ks.dtb \
+			      k3-am67a-r5-kontron-sa67-mt53e2g32d4de.dtb \
+			      k3-am67a-kontron-sa67.dtb
 
 dtb-$(CONFIG_SOC_K3_AM642) += k3-am642-r5-evm.dtb \
 			      k3-am642-r5-sk.dtb \
