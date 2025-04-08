@@ -14,6 +14,31 @@
 #include <spl.h>
 #include <asm/arch/k3-ddr.h>
 
+static int sa67_boot_device(void)
+{
+	u32 devstat = readl(CTRLMMR_MAIN_DEVSTAT);
+	u32 bootmode = (devstat & MAIN_DEVSTAT_PRIMARY_BOOTMODE_MASK) >>
+				MAIN_DEVSTAT_PRIMARY_BOOTMODE_SHIFT;
+	return bootmode;
+}
+
+static void sa67_set_prompt(void)
+{
+	int boot_device = sa67_boot_device();
+
+	switch (boot_device) {
+	case BOOT_DEVICE_SPI:
+		env_set("PS1", "[FAILSAFE] => ");
+		break;
+	case BOOT_DEVICE_MMC:
+		env_set("PS1", "[SDHC] => ");
+		break;
+	default:
+		env_set("PS1", NULL);
+		break;
+	}
+}
+
 int board_init(void)
 {
 	return 0;
@@ -29,12 +54,13 @@ int dram_init_banksize(void)
 	return fdtdec_setup_memory_banksize();
 }
 
-#if IS_ENABLED(CONFIG_BOARD_LATE_INIT)
 int board_late_init(void)
 {
+	if (IS_ENABLED(CONFIG_CMDLINE_PS_SUPPORT))
+		sa67_set_prompt();
+
 	return 0;
 }
-#endif
 
 #if IS_ENABLED(CONFIG_XPL_BUILD)
 void spl_perform_fixups(struct spl_image_info *spl_image)
