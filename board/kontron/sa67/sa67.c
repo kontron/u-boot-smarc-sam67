@@ -10,6 +10,7 @@
 #include <asm/io.h>
 #include <dm/uclass.h>
 #include <env.h>
+#include <env_internal.h>
 #include <fdt_support.h>
 #include <spl.h>
 #include <asm/arch/k3-ddr.h>
@@ -20,6 +21,33 @@ static int sa67_boot_device(void)
 	u32 bootmode = (devstat & MAIN_DEVSTAT_PRIMARY_BOOTMODE_MASK) >>
 				MAIN_DEVSTAT_PRIMARY_BOOTMODE_SHIFT;
 	return bootmode;
+}
+
+enum env_location env_get_location(enum env_operation op, int prio)
+{
+	int boot_device = sa67_boot_device();
+
+	if (prio != 0)
+		return ENVL_UNKNOWN;
+
+	if (!CONFIG_IS_ENABLED(ENV_IS_IN_MMC) && !CONFIG_IS_ENABLED(ENV_IS_NOWHERE))
+		return ENVL_UNKNOWN;
+
+	if (!CONFIG_IS_ENABLED(ENV_IS_IN_MMC))
+		return ENVL_NOWHERE;
+
+	/* write and erase always operate on the stored environment */
+	if (op == ENVOP_SAVE || op == ENVOP_ERASE)
+		return ENVL_MMC;
+
+	/*
+	 * failsafe and manufacturer boot will always use the compiled-in
+	 * default environment.
+	 */
+	if (boot_device == BOOT_DEVICE_SPI || boot_device == BOOT_DEVICE_MMC)
+		return ENVL_NOWHERE;
+
+	return ENVL_MMC;
 }
 
 static void sa67_set_prompt(void)
