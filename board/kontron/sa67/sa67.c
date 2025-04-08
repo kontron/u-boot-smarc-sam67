@@ -12,6 +12,8 @@
 #include <env.h>
 #include <env_internal.h>
 #include <fdt_support.h>
+#include <fs.h>
+#include <malloc.h>
 #include <spl.h>
 #include <asm/arch/k3-ddr.h>
 
@@ -50,6 +52,38 @@ enum env_location env_get_location(enum env_operation op, int prio)
 	return ENVL_MMC;
 }
 
+static void sa67_import_environment(void)
+{
+	const char *filename = "u-boot-env.txt";
+	const int bufsize = 16 * 1024;
+	char *buf = malloc(bufsize);
+	loff_t size;
+
+	/* this is only for production purposes */
+	if (sa67_boot_device() != BOOT_DEVICE_MMC)
+		goto out;
+
+	if (fs_set_blk_dev("mmc", "1:1", FS_TYPE_ANY))
+		goto out;
+
+	if (!fs_exists(filename))
+		goto out;
+
+	if (fs_set_blk_dev("mmc", "1:1", FS_TYPE_ANY))
+		goto out;
+
+	if (fs_read(filename, (ulong)buf, 0, bufsize, &size))
+		goto out;
+
+	if (!himport_r(&env_htab, buf, size, '\n', H_NOCLEAR, 1, 0, NULL))
+		goto out;
+
+	printf("Imported additional environment from %s\n", filename);
+
+out:
+	free(buf);
+}
+
 static void sa67_set_prompt(void)
 {
 	int boot_device = sa67_boot_device();
@@ -86,6 +120,8 @@ int board_late_init(void)
 {
 	if (IS_ENABLED(CONFIG_CMDLINE_PS_SUPPORT))
 		sa67_set_prompt();
+
+	sa67_import_environment();
 
 	return 0;
 }
