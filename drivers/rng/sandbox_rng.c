@@ -54,3 +54,9 @@ U_BOOT_DRIVER(pseudo_rng) = {
 	.of_match = pseudo_rng_match,
 	.ops = &pseudo_rng_ops,
 };
+
+#if CONFIG_IS_ENABLED(RNG_PRNG)
+U_BOOT_DRVINFO(pseudo_rng) = {
+	.name = "pseudo-rng",
+};
+#endif
