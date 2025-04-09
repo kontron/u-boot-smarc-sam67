@@ -9,7 +9,7 @@
 #include <time.h>
 #include <linux/string.h>
 
-static int sandbox_rng_read(struct udevice *dev, void *data, size_t len)
+static int pseudo_rng_read(struct udevice *dev, void *data, size_t len)
 {
 	unsigned int i, seed, random;
 	unsigned char *buf = data;
@@ -37,20 +37,20 @@ static int sandbox_rng_read(struct udevice *dev, void *data, size_t len)
 	return 0;
 }
 
-static const struct dm_rng_ops sandbox_rng_ops = {
-	.read = sandbox_rng_read,
+static const struct dm_rng_ops pseudo_rng_ops = {
+	.read = pseudo_rng_read,
 };
 
-static const struct udevice_id sandbox_rng_match[] = {
+static const struct udevice_id pseudo_rng_match[] = {
 	{
 		.compatible = "sandbox,sandbox-rng",
 	},
 	{},
 };
 
-U_BOOT_DRIVER(sandbox_rng) = {
-	.name = "sandbox-rng",
+U_BOOT_DRIVER(pseudo_rng) = {
+	.name = "pseudo-rng",
 	.id = UCLASS_RNG,
-	.of_match = sandbox_rng_match,
-	.ops = &sandbox_rng_ops,
+	.of_match = pseudo_rng_match,
+	.ops = &pseudo_rng_ops,
 };

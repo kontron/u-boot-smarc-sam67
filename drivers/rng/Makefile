@@ -5,7 +5,7 @@
 
 obj-$(CONFIG_$(PHASE_)DM_RNG) += rng-uclass.o
 obj-$(CONFIG_RNG_MESON) += meson-rng.o
-obj-$(CONFIG_RNG_SANDBOX) += sandbox_rng.o
+obj-$(CONFIG_RNG_PRNG_SUPPORT) += sandbox_rng.o
 obj-$(CONFIG_RNG_MSM) += msm_rng.o
 obj-$(CONFIG_RNG_NPCM) += npcm_rng.o
 obj-$(CONFIG_RNG_OPTEE) += optee_rng.o
