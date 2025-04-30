@@ -9,12 +9,16 @@
 #include <asm/arch/hardware.h>
 #include <asm/io.h>
 #include <dm/uclass.h>
+#include <dm/device.h>
 #include <env.h>
 #include <env_internal.h>
 #include <fdt_support.h>
 #include <fs.h>
+#include <i2c.h>
 #include <malloc.h>
+#include <sl28cpld.h>
 #include <spl.h>
+#include <wdt.h>
 #include <asm/arch/k3-ddr.h>
 
 static int sa67_boot_device(void)
@@ -106,6 +110,18 @@ int board_init(void)
 	return 0;
 }
 
+static void stop_recovery_watchdog(void)
+{
+	struct udevice *dev;
+	int ret;
+
+	ret = uclass_get_device_by_driver(UCLASS_WDT,
+					  DM_DRIVER_GET(sl28cpld_wdt), &dev);
+	if (!ret)
+		wdt_stop(dev);
+}
+
+
 int dram_init(void)
 {
 	return fdtdec_setup_mem_size_base_lowest();
@@ -118,6 +134,19 @@ int dram_init_banksize(void)
 
 int board_late_init(void)
 {
+	/*
+	 * Usually, the after a board reset, the watchdog is enabled by
+	 * default. This is to supervise the bootloader boot-up. Therefore,
+	 * to prevent a watchdog reset if we don't actively kick it, we have
+	 * to disable it.
+	 *
+	 * If the watchdog isn't enabled at reset (which is a configuration
+	 * option) disabling it doesn't hurt either.
+	 */
+	if (IS_ENABLED(CONFIG_WDT_SL28CPLD) &&
+	    !IS_ENABLED(CONFIG_WATCHDOG_AUTOSTART))
+		stop_recovery_watchdog();
+
 	if (IS_ENABLED(CONFIG_CMDLINE_PS_SUPPORT))
 		sa67_set_prompt();
 
