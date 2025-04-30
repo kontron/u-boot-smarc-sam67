@@ -440,9 +440,9 @@
 		};
 	};
 
-	system-controller@50 {
+	system-controller@4a {
 		compatible = "kontron,sa67uc", "kontron,sl28cpld";
-		reg = <0x50>;
+		reg = <0x4a>;
 		#address-cells = <1>;
 		#size-cells = <0>;
 
