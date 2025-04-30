@@ -105,8 +105,32 @@ static void sa67_set_prompt(void)
 	}
 }
 
+static const uint8_t cmd_connect[] = {
+	0x80, 0x01, 0x00, 0x12, 0x3a, 0x61, 0x44, 0xde,
+};
+
+static void mspm0_bsl_cmd(struct udevice *dev, const uint8_t *cmd, int len)
+{
+	uint8_t rc;
+	int ret;
+
+	ret = dm_i2c_write(dev, 0, cmd, len);
+	if (ret < 0)
+		printf("Failed to send command to MSPM0\n");
+	ret = dm_i2c_read(dev, 0, &rc, 1);
+	if (ret < 0 || rc != 0)
+		printf("Failed to receive ACK from MSPM0 (%d/%d)\n", ret, rc);
+}
+
 int board_init(void)
 {
+	struct udevice *dev = NULL;
+	int ret;
+
+	ret = i2c_get_chip_for_busnum(2, 0x48, 0, &dev);
+	if (!ret)
+		mspm0_bsl_cmd(dev, cmd_connect, sizeof(cmd_connect));
+
 	return 0;
 }
 
