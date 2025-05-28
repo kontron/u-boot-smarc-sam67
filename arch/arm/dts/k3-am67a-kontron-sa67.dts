@@ -11,6 +11,17 @@
 #include "k3-j722s.dtsi"
 #include "k3-serdes.h"
 
+/* remove when dtsi is synced with kernel (upstream dts) */
+&main_conf {
+	audio_refclk0: clock@82e0 {
+	};
+};
+
+&cbass_main {
+	main_i2c4: i2c@fe80000 {
+	};
+};
+
 / {
 	compatible = "kontron,sa67", "ti,j722s";
 	model = "Kontron SMARC-sAM67";
@@ -23,6 +34,7 @@
 		mmc0 = &sdhci0;
 		mmc1 = &sdhci1;
 		rtc0 = &rtc;
+		rtc1 = &wkup_rtc0;
 	};
 
 	lcd0_backlight: backlight-1 {
@@ -73,9 +85,10 @@
 
 	};
 
-	memory: memory@80000000 {
-		/* 1G RAM */
-		reg = <0x00000000 0x80000000 0x00000000 0x40000000>;
+	memory@80000000 {
+		/* 4G RAM */
+		reg = <0x00000000 0x80000000 0x00000000 0x80000000>,
+		      <0x00000008 0x80000000 0x00000000 0x80000000>;
 		device_type = "memory";
 		bootph-pre-ram;
 	};
@@ -140,6 +153,7 @@
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		vin-supply = <&vcc_3p3_s5>;
+		regulator-always-on;
 		regulator-boot-on;
 		enable-active-high;
 		gpios = <&tps652g1 1 GPIO_ACTIVE_HIGH>;
@@ -186,7 +200,7 @@
 		vin-supply = <&vcc_3p3_s5>;
 		regulator-boot-on;
 		enable-active-high;
-		interrupts-extended = <&main_gpio1 30 IRQ_TYPE_LEVEL_LOW>;
+		interrupts-extended = <&main_gpio1 30 IRQ_TYPE_EDGE_FALLING>;
 		bootph-all;
 	};
 
@@ -244,6 +258,18 @@
 		enable-active-high;
 		gpios = <&main_gpio1 50 GPIO_ACTIVE_HIGH>;
 	};
+};
+
+&audio_refclk0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&audio_refclk0_pins_default>;
+	status = "disabled";
+};
+
+&audio_refclk1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&audio_refclk1_pins_default>;
+	status = "disabled";
 };
 
 &cpsw3g {
@@ -304,7 +330,7 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&edp_bridge_pins_default>;
 
-		interrupts-extended = <&main_gpio0 38 IRQ_TYPE_LEVEL_LOW>;
+		interrupts-extended = <&main_gpio0 38 IRQ_TYPE_EDGE_FALLING>;
 
 		enable-gpios = <&main_gpio0 37 GPIO_ACTIVE_HIGH>;
 
@@ -358,9 +384,9 @@
 		};
 	};
 
-	tps652g1: pmic@48 {
+	tps652g1: pmic@44 {
 		compatible = "ti,tps652g1";
-		reg = <0x48>;
+		reg = <0x44>;
 		ti,primary-pmic;
 		system-power-controller;
 
@@ -370,13 +396,14 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&pmic_irq_pins_default>;
 		/* XXX: MCU gpio ?! */
-		interrupts-extended = <&main_gpio0 35 IRQ_TYPE_LEVEL_LOW>;
+		interrupts-extended = <&main_gpio0 35 IRQ_TYPE_EDGE_FALLING>;
 
 		buck1-supply = <&vin_5p0>;
 		buck2-supply = <&vin_5p0>;
 		buck3-supply = <&vin_5p0>;
 		buck4-supply = <&vin_5p0>;
-		ldo12-supply = <&vin_5p0>;
+		ldo1-supply = <&vin_5p0>;
+		ldo2-supply = <&vin_5p0>;
 		ldo3-supply = <&vin_5p0>;
 
 		bootph-all;
@@ -458,7 +485,7 @@
 		reg = <0x51>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&rtc_pins_default>;
-		interrupts-extended = <&main_gpio0 36 IRQ_TYPE_LEVEL_LOW>;
+		interrupts-extended = <&main_gpio0 36 IRQ_TYPE_EDGE_FALLING>;
 	};
 };
 
@@ -516,22 +543,35 @@
 };
 
 /* I2C_EFI_EEPROM */
-//&main_i2c4 {
-//	pinctrl-names = "default";
-//	pinctrl-0 = <&main_i2c4_pins_default>;
-//	clock-frequency = <100000>;
-//	status = "okay";
-//
-//	/* EFI EEPROM */
-//	eeprom@50 {
-//		compatible = "atmel,24c128";
-//		reg = <0x50>;
-//		pagesize = <32>;
-//		status = "reserved";
-//	};
-//};
+&main_i2c4 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&main_i2c4_pins_default>;
+	clock-frequency = <100000>;
+	status = "okay";
+
+	/* EFI EEPROM */
+	eeprom@50 {
+		compatible = "atmel,24c128";
+		reg = <0x50>;
+		pagesize = <32>;
+		vcc-supply = <&vcc_1p8_s0>;
+		status = "reserved";
+	};
+};
 
 &main_pmx0 {
+	audio_refclk0_pins_default: audio-refclk0-default-pins {
+		pinctrl-single,pins = <
+			J722S_IOPAD(0x0c4, PIN_OUTPUT, 5)		/* (W23) VOUT0_DATA3.AUDIO_EXT_REFCLK0 */
+		>;
+	};
+
+	audio_refclk1_pins_default: audio-refclk1-default-pins {
+		pinctrl-single,pins = <
+			J722S_IOPAD(0x0a0, PIN_OUTPUT, 1)		/* (N24) GPMC0_WPn.AUDIO_EXT_REFCLK1 */
+		>;
+	};
+
 	cpsw3g_mdio_pins_default: cpsw3g-mdio-default-pins {
 		pinctrl-single,pins = <
 			J722S_IOPAD(0x160, PIN_OUTPUT, 0)	/* (AC24) MDIO0_MDC */
@@ -646,6 +686,13 @@
 			J722S_IOPAD(0x26c, PIN_OUTPUT, 0)	/* (AB21) OLDI0_A2P */
 			J722S_IOPAD(0x278, PIN_OUTPUT, 0)	/* (AG20) OLDI0_A3N */
 			J722S_IOPAD(0x274, PIN_OUTPUT, 0)	/* (AG21) OLDI0_A3P */
+			J722S_IOPAD(0x2a0, PIN_OUTPUT, 0)	/* (AF21) OLDI0_CLK0N */
+			J722S_IOPAD(0x29c, PIN_OUTPUT, 0)	/* (AE20) OLDI0_CLK0P */
+		>;
+	};
+
+	oldi1_pins_default: oldi1-default-pins {
+		pinctrl-single,pins = <
 			J722S_IOPAD(0x280, PIN_OUTPUT, 0)	/* (AD21) OLDI0_A4N */
 			J722S_IOPAD(0x27c, PIN_OUTPUT, 0)	/* (AC21) OLDI0_A4P */
 			J722S_IOPAD(0x288, PIN_OUTPUT, 0)	/* (AF19) OLDI0_A5N */
@@ -654,8 +701,6 @@
 			J722S_IOPAD(0x28c, PIN_OUTPUT, 0)	/* (AG18) OLDI0_A6P */
 			J722S_IOPAD(0x298, PIN_OUTPUT, 0)	/* (AB19) OLDI0_A7N */
 			J722S_IOPAD(0x294, PIN_OUTPUT, 0)	/* (AA20) OLDI0_A7P */
-			J722S_IOPAD(0x2a0, PIN_OUTPUT, 0)	/* (AF21) OLDI0_CLK0N */
-			J722S_IOPAD(0x29c, PIN_OUTPUT, 0)	/* (AE20) OLDI0_CLK0P */
 			J722S_IOPAD(0x2a8, PIN_OUTPUT, 0)	/* (AD20) OLDI0_CLK1N */
 			J722S_IOPAD(0x2a4, PIN_OUTPUT, 0)	/* (AE19) OLDI0_CLK1P */
 		>;
@@ -744,7 +789,13 @@
 
 	usb0_connector_pins_default: usb0-connector-default-pins {
 		pinctrl-single,pins = <
-			J722S_IOPAD(0x08c, PIN_INPUT, 7)	/* (N23) GPMC0_WEn.GPIO0_34 */
+			J722S_IOPAD(0x08c, PIN_INPUT_PULLUP, 7)	/* (N23) GPMC0_WEn.GPIO0_34 */
+		>;
+	};
+
+	usb1_pins_default: usb1-default-pins {
+		pinctrl-single,pins = <
+			J722S_IOPAD(0x258, PIN_OUTPUT, 0)	/* (B27) USB1_DRVVBUS */
 		>;
 	};
 
@@ -849,6 +900,7 @@
 		compatible = "atmel,24c32";
 		reg = <0x50>;
 		pagesize = <32>;
+		vcc-supply = <&vcc_1p8_s0>;
 	};
 };
 
@@ -914,7 +966,7 @@
 &mcu_spi0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&mcu_spi0_pins_default>;
-	status = "okay";
+	status = "disabled";
 };
 
 /* SER0 */
@@ -938,6 +990,12 @@
 		spi-rx-bus-width = <2>;
 		spi-tx-bus-width = <2>;
 		m25p,fast-read;
+		cdns,tshsl-ns = <60>;
+		cdns,tsd2d-ns = <60>;
+		cdns,tchsh-ns = <60>;
+		cdns,tslch-ns = <60>;
+		cdns,read-delay = <3>;
+		vcc-supply = <&vcc_1p8_s0>;
 		bootph-all;
 
 		partitions {
@@ -946,14 +1004,9 @@
 			#size-cells = <1>;
 
 			partition@0 {
-				reg = <0x000000 0x3e0000>;
+				reg = <0x000000 0x400000>;
 				label = "failsafe bootloader";
 				read-only;
-			};
-
-			partition@3e0000 {
-				reg = <0x3e0000 0x020000>;
-				label = "bootloader environment";
 			};
 		};
 
@@ -998,20 +1051,19 @@
 	vmmc-supply = <&vcc_3p3_sd_s0>;
 	vqmmc-supply = <&vcc_3p3_sd_vio_s0>;
 	bootph-all;
-#if 0
-	/* CD with via gpio ?? */
 	cd-gpios = <&main_gpio1 48 GPIO_ACTIVE_LOW>;
 	cd-debounce-delay-ms = <100>;
 	ti,fails-without-test-cd;
-#endif
 	ti,driver-strength-ohm = <50>;
 	status = "okay";
 };
 
-//&serdes_ln_ctrl {
-//	idle-states = <J722S_SERDES0_LANE0_USB>,
-//		      <J722S_SERDES1_LANE0_PCIE0_LANE0>;
-//};
+#if 1
+&serdes_ln_ctrl {
+	idle-states = <J722S_SERDES0_LANE0_USB>,
+		      <J722S_SERDES1_LANE0_PCIE0_LANE0>;
+};
+#endif
 
 &serdes0 {
 	status = "okay";
@@ -1055,6 +1107,9 @@
 };
 
 &usb1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&usb1_pins_default>;
+
 	dr_mode = "host";
 	maximum-speed = "super-speed";
 	phys = <&serdes0_usb3>;
