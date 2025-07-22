@@ -34,6 +34,17 @@
 	};
 };
 
+&main_gpio0 {
+	reset-out-hog {
+		pinctrl-names = "default";
+		pinctrl-0 = <&reset_out_hog_pins_default>;
+		gpio-hog;
+		output-low;
+		gpios = <9 GPIO_ACTIVE_LOW>;
+		line-name = "RESET_OUT#";
+	};
+};
+
 &dmsc {
 	bootph-pre-ram;
 };
@@ -58,4 +69,10 @@
 &main_pmx0 {
 	/delete-property/ pinctrl-single,gpio-range;
 	/delete-node/ gpio-range;
+
+	reset_out_hog_pins_default: reset-out-hog-default-pins {
+		pinctrl-single,pins = <
+			J722S_IOPAD(0x024, PIN_OUTPUT, 7)	/* (N27) GPIO0_9 */
+		>;
+	};
 };
