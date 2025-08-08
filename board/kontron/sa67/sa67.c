@@ -15,6 +15,7 @@
 #include <fdt_support.h>
 #include <fs.h>
 #include <i2c.h>
+#include <linux/delay.h>
 #include <malloc.h>
 #include <sl28cpld.h>
 #include <spl.h>
@@ -109,6 +110,10 @@ static const uint8_t cmd_connect[] = {
 	0x80, 0x01, 0x00, 0x12, 0x3a, 0x61, 0x44, 0xde,
 };
 
+static const uint8_t cmd_start_application[] = {
+	0x80, 0x01, 0x00, 0x40, 0xe2, 0x51, 0x21, 0x5b,
+};
+
 static void mspm0_bsl_cmd(struct udevice *dev, const uint8_t *cmd, int len)
 {
 	uint8_t rc;
@@ -127,9 +132,23 @@ int board_init(void)
 	struct udevice *dev = NULL;
 	int ret;
 
+	/*
+	 * Check if the MCU is in bootloader mode and if it is, try to start the
+	 * application. If that wasn't successful, send a connect command to
+	 * prevent the MCU from going into deep sleep mode.
+	 */
 	ret = i2c_get_chip_for_busnum(2, 0x48, 0, &dev);
-	if (!ret)
+	if (!ret) {
 		mspm0_bsl_cmd(dev, cmd_connect, sizeof(cmd_connect));
+		mspm0_bsl_cmd(dev, cmd_start_application, sizeof(cmd_start_application));
+
+		mdelay(10);
+		ret = i2c_get_chip_for_busnum(2, 0x48, 0, &dev);
+		if (!ret) {
+			mspm0_bsl_cmd(dev, cmd_connect, sizeof(cmd_connect));
+			printf("Could not start the MCU application. Starting programming mode..\n");
+		}
+	}
 
 	return 0;
 }
