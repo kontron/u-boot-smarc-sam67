@@ -130,7 +130,7 @@ static void mspm0_bsl_cmd(struct udevice *dev, const uint8_t *cmd, int len)
 int board_init(void)
 {
 	struct udevice *dev = NULL;
-	int ret;
+	int ret, version = -1;
 
 	/*
 	 * Check if the MCU is in bootloader mode and if it is, try to start the
@@ -149,6 +149,13 @@ int board_init(void)
 			printf("Could not start the MCU application. Starting programming mode..\n");
 		}
 	}
+
+	/* Print the MCU version if available. */
+	ret = i2c_get_chip_for_busnum(2, 0x4a, 1, &dev);
+	if (!ret)
+		version = dm_i2c_reg_read(dev, 3);
+	if (version >= 0)
+		printf("MCU: v%d\n", version);
 
 	return 0;
 }
