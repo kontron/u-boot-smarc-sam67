@@ -38,7 +38,6 @@
 		ti_fs_enc_fs: ti-fs-enc.bin {
 			filename = "ti-sysfw/ti-fs-firmware-j722s-hs-fs-enc.bin";
 			type = "blob-ext";
-			optional;
 		};
 
 		combined_tifs_cfg_fs: combined-tifs-cfg.bin {
