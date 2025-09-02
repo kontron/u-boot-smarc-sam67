@@ -65,15 +65,6 @@
 #define KONTRON_SA67_DTB "u-boot.dtb"
 
 &binman {
-	ti-dm {
-		filename = "ti-dm.bin";
-
-		blob-ext {
-			filename = "ti-dm/j722s/ipc_echo_testb_mcu1_0_release_strip.xer5f";
-			optional;
-		};
-	};
-
 	ti-spl {
 		insert-template = <&ti_spl_template>;
 
@@ -86,7 +77,8 @@
 					};
 
 					dm: ti-dm {
-						filename = "ti-dm.bin";
+						filename = "ti-dm/j722s/ipc_echo_testb_mcu1_0_release_strip.xer5f";
+						optional;
 					};
 				};
 
