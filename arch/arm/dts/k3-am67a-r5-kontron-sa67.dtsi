@@ -13,6 +13,7 @@
 		remoteproc0 = &sysctrler;
 		remoteproc1 = &a53_0;
 		//serial0 = &wkup_uart0;
+		//serial2 = &main_uart0;
 	};
 
 	a53_0: a53@0 {
@@ -26,7 +27,7 @@
 		clock-names = "gtc", "core";
 		assigned-clocks = <&k3_clks 61 0>, <&k3_clks 135 0>;
 		assigned-clock-parents = <&k3_clks 61 2>;
-		assigned-clock-rates = <200000000>, <1200000000>;
+		assigned-clock-rates = <200000000>, <1400000000>;
 		ti,sci = <&dmsc>;
 		ti,sci-proc-id = <32>;
 		ti,sci-host-id = <10>;
@@ -69,13 +70,21 @@
 	};
 
 	sysctrler: sysctrler {
-		compatible = "ti,am654-system-controller";
+		compatible = "ti,am654-tisci-rproc-r5";
 		mboxes= <&secure_proxy_main 1>,
 			<&secure_proxy_main 0>,
 			<&sa3_secproxy 0>;
 		mbox-names = "tx", "rx", "boot_notify";
 		bootph-all;
 	};
+};
+
+&main_timer0 {
+	/delete-property/ clocks;
+	/delete-property/ clocks-names;
+	/delete-property/ assigned-clocks;
+	/delete-property/ assigned-clock-parents;
+	clock-frequency = <25000000>;
 };
 
 /* WKUP UART0 is used for DM firmware logs */
