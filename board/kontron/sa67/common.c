@@ -17,6 +17,7 @@ const char *spl_board_loader_name(u32 boot_device)
 	struct mmc *mmc;
 
 	switch (boot_device) {
+#if CONFIG_IS_ENABLED(DM_MMC)
 	case BOOT_DEVICE_MMC1:
 		mmc_init_device(0);
 		mmc = find_mmc_device(0);
@@ -24,6 +25,7 @@ const char *spl_board_loader_name(u32 boot_device)
 		snprintf(name, sizeof(name), "eMMC (%s)",
 			 emmc_hwpart_names[EXT_CSD_EXTRACT_BOOT_PART(mmc->part_config)]);
 		return name;
+#endif
 	case BOOT_DEVICE_MMC2:
 		return "SD card (Test mode)";
 	case BOOT_DEVICE_SPI:
