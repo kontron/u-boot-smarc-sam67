@@ -34,25 +34,32 @@ enum env_location env_get_location(enum env_operation op, int prio)
 {
 	int boot_device = sa67_boot_device();
 
-	if (prio != 0)
-		return ENVL_UNKNOWN;
-
+	/* obviously, we need to have the env support enabled */
 	if (!CONFIG_IS_ENABLED(ENV_IS_IN_MMC) && !CONFIG_IS_ENABLED(ENV_IS_NOWHERE))
 		return ENVL_UNKNOWN;
 
 	if (!CONFIG_IS_ENABLED(ENV_IS_IN_MMC))
 		return ENVL_NOWHERE;
 
-	/* write and erase always operate on the stored environment */
-	if (op == ENVOP_SAVE || op == ENVOP_ERASE)
+	/* erase always operate on the stored environment */
+	if (op == ENVOP_ERASE)
 		return ENVL_MMC;
 
 	/*
-	 * failsafe and manufacturer boot will always use the compiled-in
-	 * default environment.
+	 * failsafe and manufacturer boot will use the compiled-in
+	 * default environment unless it's manually selected.
 	 */
-	if (boot_device == BOOT_DEVICE_SPI || boot_device == BOOT_DEVICE_MMC)
-		return ENVL_NOWHERE;
+	if (boot_device == BOOT_DEVICE_SPI || boot_device == BOOT_DEVICE_MMC) {
+		switch (prio) {
+			case 0: return ENVL_NOWHERE;
+			case 1: return ENVL_MMC;
+			default: return ENVL_UNKNOWN;
+		}
+	}
+
+	/* standard boot only support one environment */
+	if (prio != 0)
+		return ENVL_UNKNOWN;
 
 	return ENVL_MMC;
 }
