@@ -254,6 +254,10 @@ int board_late_init(void)
 #if IS_ENABLED(CONFIG_XPL_BUILD)
 void spl_perform_board_fixups(struct spl_image_info *spl_image)
 {
-	fixup_memory_node(spl_image);
+	if (IS_ENABLED(CONFIG_K3_INLINE_ECC)) {
+		fixup_ddr_driver_for_ecc(spl_image);
+	} else {
+		fixup_memory_node(spl_image);
+	}
 }
 #endif
