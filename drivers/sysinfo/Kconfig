@@ -31,6 +31,12 @@ config SYSINFO_RCAR3
 	help
 	  Support querying SoC version information for Renesas R-Car Gen3.
 
+config SYSINFO_SA67
+	bool "Enable sysinfo driver for the Kontron SMARC-sA67 board"
+	depends on TARGET_SA67_A53 || TARGET_SA67_R5
+	help
+	  Support querying device information for the Kontron SMARC-sa67 board.
+
 config SYSINFO_IOT2050
 	bool "Enable sysinfo driver for the Siemens IOT2050"
 	depends on TARGET_IOT2050_A53

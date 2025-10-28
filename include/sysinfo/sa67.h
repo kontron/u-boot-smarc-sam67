@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: GPL-2.0+
+
+#ifndef __SYSINFO_SA67_H
+#define __SYSINFO_SA67_H
+
+#include <sysinfo.h>
+
+enum {
+	BOARD_REVISION = SYSID_BOARD_MODEL,
+	BOARD_CFG = SYSID_USER,
+	BOARD_MEMORY,
+	BOARD_HAS_GBE1,
+	BOARD_HAS_DP0,
+	BOARD_HAS_DSI1,
+	BOARD_HAS_RTC_RV3032,
+	BOARD_HAS_RTC_RV8263,
+};
+
+#endif /* __SYSINFO_SA67_H */
