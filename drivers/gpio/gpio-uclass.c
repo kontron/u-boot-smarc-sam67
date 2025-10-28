@@ -12,6 +12,7 @@
 #include <dm/device_compat.h>
 #include <dm/device-internal.h>
 #include <dm/lists.h>
+#include <dm/pinctrl.h>
 #include <dm/uclass-internal.h>
 #include <dt-bindings/gpio/gpio.h>
 #include <errno.h>
@@ -1034,8 +1035,9 @@ int dm_gpio_get_values_as_int(const struct gpio_desc *desc_list, int count)
 	return vector;
 }
 
-int dm_gpio_get_values_as_int_base3(struct gpio_desc *desc_list,
-				    int count)
+int dm_gpio_get_values_as_int_base3_pctrl(struct udevice *pinctrl,
+					  struct gpio_desc *desc_list,
+					  int count)
 {
 	static const char tristate[] = "01z";
 	enum {
@@ -1056,11 +1058,20 @@ int dm_gpio_get_values_as_int_base3(struct gpio_desc *desc_list,
 	assert(count < 20);
 
 	for (i = 0; i < NUM_OPTIONS; i++) {
-		uint flags = GPIOD_IS_IN;
+		if (CONFIG_IS_ENABLED(PINCTRL) && pinctrl) {
+			const char *state = (i == PULLDOWN) ? "pull-down" :
+							      "pull-up";
+			ret = pinctrl_select_state(pinctrl, state);
+		} else if (pinctrl) {
+			return log_msg_ret("no pinctrl", -EINVAL);
+		} else {
+			uint flags = GPIOD_IS_IN;
 
-		flags |= (i == PULLDOWN) ? GPIOD_PULL_DOWN : GPIOD_PULL_UP;
-		ret = dm_gpios_clrset_flags(desc_list, count, GPIOD_MASK_PULL,
-					    flags);
+			flags |= (i == PULLDOWN) ? GPIOD_PULL_DOWN :
+						   GPIOD_PULL_UP;
+			ret = dm_gpios_clrset_flags(desc_list, count,
+						    GPIOD_MASK_PULL, flags);
+		}
 		if (ret)
 			return log_msg_ret("pu", ret);
 
@@ -1097,6 +1108,12 @@ int dm_gpio_get_values_as_int_base3(struct gpio_desc *desc_list,
 	log_debug("vector=%d\n", vector);
 
 	return vector;
+}
+
+int dm_gpio_get_values_as_int_base3(struct gpio_desc *desc_list,
+				    int count)
+{
+	return dm_gpio_get_values_as_int_base3_pctrl(NULL, desc_list, count);
 }
 
 /**
