@@ -525,6 +525,10 @@ int dm_gpio_get_values_as_int(const struct gpio_desc *desc_list, int count);
 int dm_gpio_get_values_as_int_base3(struct gpio_desc *desc_list,
 				    int count);
 
+int dm_gpio_get_values_as_int_base3_pctrl(struct udevice *pinctrl,
+					  struct gpio_desc *desc_list,
+					  int count);
+
 /**
  * gpio_claim_vector() - claim a number of GPIOs for input
  *
