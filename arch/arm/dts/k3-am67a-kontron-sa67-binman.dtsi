@@ -60,7 +60,7 @@
 
 #if IS_ENABLED(CONFIG_TARGET_SA67_A53)
 
-#define SPL_KONTRON_SA67_DTB "spl/dts/k3-am67a-kontron-sa67.dtb"
+#define SPL_KONTRON_SA67_DTB "spl/dts/k3-am67a-kontron-sa67-base.dtb"
 #define KONTRON_SA67_DTB "u-boot.dtb"
 
 &binman {
@@ -88,11 +88,11 @@
 					compression = "none";
 
 					ti-secure {
-						content = <&spl_kontron_sa67_dtb>;
+						content = <&spl_kontron_sa67_base_dtb>;
 						keyfile = "custMpk.pem";
 					};
 
-					spl_kontron_sa67_dtb: blob-ext {
+					spl_kontron_sa67_base_dtb: blob-ext {
 						filename = SPL_KONTRON_SA67_DTB;
 					};
 
@@ -125,7 +125,7 @@
 				};
 
 				fdt-0 {
-					description = "k3-am67a-kontron-sa67";
+					description = "k3-am67a-kontron-sa67-base";
 					type = "flat_dt";
 					arch = "arm";
 					compression = "none";
