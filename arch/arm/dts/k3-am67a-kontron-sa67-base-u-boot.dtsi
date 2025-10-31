@@ -6,6 +6,23 @@
 #include "k3-am67a-kontron-sa67-binman.dtsi"
 
 / {
+	board {
+		compatible = "kontron,sysinfo-sa67";
+
+		pinctrl-names = "pull-up", "pull-down";
+		pinctrl-0 = <&board_sysinfo_pull_up>;
+		pinctrl-1 = <&board_sysinfo_pull_down>;
+
+		boardcfg-gpios = <&main_gpio0 15 GPIO_ACTIVE_HIGH>,
+				 <&main_gpio0 16 GPIO_ACTIVE_HIGH>,
+				 <&main_gpio0 17 GPIO_ACTIVE_HIGH>,
+				 <&main_gpio0 18 GPIO_ACTIVE_HIGH>,
+				 <&main_gpio0 19 GPIO_ACTIVE_HIGH>;
+		revision-gpios = <&main_gpio0 21 GPIO_ACTIVE_HIGH>,
+				 <&main_gpio0 22 GPIO_ACTIVE_HIGH>;
+		bootph-all;
+	};
+
 	chosen {
 		tick-timer = &main_timer0;
 	};
@@ -69,6 +86,38 @@
 &main_pmx0 {
 	/delete-property/ pinctrl-single,gpio-range;
 	/delete-node/ gpio-range;
+};
+
+&main_pmx0 {
+	bootph-all;
+
+	board_sysinfo_pull_up: board-sysinfo-pull-up-pins {
+		pinctrl-single,pins = <
+			J722S_IOPAD(0x03c, PIN_INPUT_PULLUP, 7)		/* (R22) GPNC9_AD0.GPIO0_15 */
+			J722S_IOPAD(0x040, PIN_INPUT_PULLUP, 7)		/* (R23) GPNC9_AD1.GPIO0_16 */
+			J722S_IOPAD(0x044, PIN_INPUT_PULLUP, 7)		/* (R26) GPNC9_AD2.GPIO0_17 */
+			J722S_IOPAD(0x048, PIN_INPUT_PULLUP, 7)		/* (T27) GPNC9_AD3.GPIO0_18 */
+			J722S_IOPAD(0x04c, PIN_INPUT_PULLUP, 7)		/* (T25) GPNC9_AD4.GPIO0_19 */
+			J722S_IOPAD(0x050, PIN_INPUT_PULLUP, 7)		/* (T24) GPNC9_AD5.GPIO0_20 */
+			J722S_IOPAD(0x054, PIN_INPUT_PULLUP, 7)		/* (T21) GPNC9_AD6.GPIO0_21 */
+			J722S_IOPAD(0x058, PIN_INPUT_PULLUP, 7)		/* (T22) GPNC9_AD7.GPIO0_22 */
+		>;
+		bootph-all;
+	};
+
+	board_sysinfo_pull_down: board-sysinfo-pull-down-pins {
+		pinctrl-single,pins = <
+			J722S_IOPAD(0x03c, PIN_INPUT_PULLDOWN, 7)	/* (R22) GPNC9_AD0.GPIO0_15 */
+			J722S_IOPAD(0x040, PIN_INPUT_PULLDOWN, 7)	/* (R23) GPNC9_AD1.GPIO0_16 */
+			J722S_IOPAD(0x044, PIN_INPUT_PULLDOWN, 7)	/* (R26) GPNC9_AD2.GPIO0_17 */
+			J722S_IOPAD(0x048, PIN_INPUT_PULLDOWN, 7)	/* (T27) GPNC9_AD3.GPIO0_18 */
+			J722S_IOPAD(0x04c, PIN_INPUT_PULLDOWN, 7)	/* (T25) GPNC9_AD4.GPIO0_19 */
+			J722S_IOPAD(0x050, PIN_INPUT_PULLDOWN, 7)	/* (T24) GPNC9_AD5.GPIO0_20 */
+			J722S_IOPAD(0x054, PIN_INPUT_PULLDOWN, 7)	/* (T21) GPNC9_AD6.GPIO0_21 */
+			J722S_IOPAD(0x058, PIN_INPUT_PULLDOWN, 7)	/* (T22) GPNC9_AD7.GPIO0_22 */
+		>;
+		bootph-all;
+	};
 
 	reset_out_hog_pins_default: reset-out-hog-default-pins {
 		pinctrl-single,pins = <

@@ -21,6 +21,8 @@
 #include <spl.h>
 #include <wdt.h>
 #include <asm/arch/k3-ddr.h>
+#include <sysinfo.h>
+#include <sysinfo/sa67.h>
 
 static int sa67_boot_device(void)
 {
@@ -133,6 +135,43 @@ static void mspm0_bsl_cmd(struct udevice *dev, const uint8_t *cmd, int len)
 	if (ret < 0 || rc != 0)
 		printf("Failed to receive ACK from MSPM0 (%d/%d)\n", ret, rc);
 }
+
+int board_spl_fit_append_fdt_skip(const char *name)
+{
+	static struct udevice *dev;
+	bool val;
+	int ret;
+
+	if (!dev) {
+		ret = sysinfo_get(&dev);
+		if (ret)
+			return 1;
+
+		ret = sysinfo_detect(dev);
+		if (ret)
+			return 1;
+	}
+
+	if (!strcmp(name, "fdt-dtbo-k3-am67a-kontron-sa67-gbe1")) {
+		ret = sysinfo_get_bool(dev, BOARD_HAS_GBE1, &val);
+		if (ret)
+			return 1;
+		return !val;
+	} else if (!strcmp(name, "fdt-dtbo-k3-am67a-kontron-sa67-rtc-rv3032")) {
+		ret = sysinfo_get_bool(dev, BOARD_HAS_RTC_RV3032, &val);
+		if (ret)
+			return 1;
+		return !val;
+	} else if (!strcmp(name, "fdt-dtbo-k3-am67a-kontron-sa67-rtc-rv8263")) {
+		ret = sysinfo_get_bool(dev, BOARD_HAS_RTC_RV8263, &val);
+		if (ret)
+			return 1;
+		return !val;
+	}
+
+	return 1;
+}
+
 
 int board_init(void)
 {
