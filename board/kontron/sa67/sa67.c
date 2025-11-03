@@ -252,7 +252,7 @@ int board_late_init(void)
 }
 
 #if IS_ENABLED(CONFIG_XPL_BUILD)
-void spl_perform_fixups(struct spl_image_info *spl_image)
+void spl_perform_board_fixups(struct spl_image_info *spl_image)
 {
 	fixup_memory_node(spl_image);
 }
