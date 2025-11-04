@@ -138,19 +138,17 @@ static void mspm0_bsl_cmd(struct udevice *dev, const uint8_t *cmd, int len)
 
 int board_spl_fit_append_fdt_skip(const char *name)
 {
-	static struct udevice *dev;
+	struct udevice *dev;
 	bool val;
 	int ret;
 
-	if (!dev) {
-		ret = sysinfo_get(&dev);
-		if (ret)
-			return 1;
+	ret = sysinfo_get(&dev);
+	if (ret)
+		return 1;
 
-		ret = sysinfo_detect(dev);
-		if (ret)
-			return 1;
-	}
+	ret = sysinfo_detect(dev);
+	if (ret)
+		return 1;
 
 	if (!strcmp(name, "fdt-dtbo-k3-am67a-kontron-sa67-gbe1")) {
 		ret = sysinfo_get_bool(dev, BOARD_HAS_GBE1, &val);
@@ -172,6 +170,60 @@ int board_spl_fit_append_fdt_skip(const char *name)
 	return 1;
 }
 
+int checkboard(void)
+{
+	struct udevice *dev;
+	char buf[128], *ptr = buf;
+	int ret, ival;
+	bool bval;
+
+	ret = sysinfo_get(&dev);
+	if (ret)
+		return 1;
+
+	ret = sysinfo_detect(dev);
+	if (ret)
+		return 1;
+
+	ret = sysinfo_get_int(dev, BOARD_REVISION, &ival);
+	if (!ret)
+		printf("Revision: %d\n", ival);
+
+	*ptr = '\0';
+	strcat(ptr, "LVDS0");
+
+	ret = sysinfo_get_bool(dev, BOARD_HAS_LVDS1, &bval);
+	if (!ret && bval)
+		strcat(ptr, ", LVDS1");
+
+	ret = sysinfo_get_bool(dev, BOARD_HAS_DP0, &bval);
+	if (!ret && bval)
+		strcat(ptr, ", DP0");
+
+	ret = sysinfo_get_bool(dev, BOARD_HAS_EDP1, &bval);
+	if (!ret && bval)
+		strcat(ptr, ", EDP1");
+
+	ret = sysinfo_get_bool(dev, BOARD_HAS_DSI1, &bval);
+	if (!ret && bval)
+		strcat(ptr, ", DSI1");
+	ret = sysinfo_get_bool(dev, BOARD_HAS_GBE1, &bval);
+	if (!ret && bval)
+		strcat(ptr, ", GBE1");
+
+	ret = sysinfo_get_bool(dev, BOARD_HAS_RTC_RV3032, &bval);
+	if (!ret && bval)
+		strcat(ptr, ", RV3032");
+
+	ret = sysinfo_get_bool(dev, BOARD_HAS_RTC_RV8263, &bval);
+	if (!ret && bval)
+		strcat(ptr, ", RV8263");
+
+	if (strlen(buf))
+		printf("Options: %s\n", buf);
+
+	return 0;
+}
 
 int board_init(void)
 {

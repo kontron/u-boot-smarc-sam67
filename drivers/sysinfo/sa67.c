@@ -54,17 +54,23 @@ static int sysinfo_sa67_get_bool(struct udevice *dev, int id, bool *val)
 	case BOARD_HAS_GBE1:
 		*val = c0 & 4;
 		break;
-	case BOARD_HAS_RTC_RV3032:
-		*val = !(c1 & 4);
-		break;
-	case BOARD_HAS_RTC_RV8263:
-		*val = c1 & 4;
+	case BOARD_HAS_LVDS1:
+		*val = (c1 & 2) == 0;
 		break;
 	case BOARD_HAS_DP0:
-		*val = c1 & 1;
+		*val = (c1 & 3) == 1;
 		break;
 	case BOARD_HAS_DSI1:
 		*val = (c1 & 3) == 2;
+		break;
+	case BOARD_HAS_EDP1:
+		*val = (c1 & 3) == 3;
+		break;
+	case BOARD_HAS_RTC_RV3032:
+		*val = c1 & 4;
+		break;
+	case BOARD_HAS_RTC_RV8263:
+		*val = !(c1 & 4);
 		break;
 	default:
 		return -ENOENT;
