@@ -1,0 +1,7 @@
+Kontron SMARC-sAM28 board
+M:      Michael Walle <mwalle@kernel.org>
+S:      Maintained
+F:	arch/arm/dts/k3-j722s-*-kontron-sa67*
+F:      board/kontron/sa67/
+F:      configs/kontron_sa67_*_defconfig
+F:      include/configs/kontron_sa67.h

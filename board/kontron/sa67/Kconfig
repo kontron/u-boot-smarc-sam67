@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: GPL-2.0+
+
+if TARGET_J722S_R5_SA67 || TARGET_J722S_A53_SA67
+
+config SYS_BOARD
+       default "sa67"
+
+config SYS_VENDOR
+       default "kontron"
+
+config SYS_CONFIG_NAME
+       default "kontron_sa67"
+
+endif
+
+if TARGET_J722S_R5_SA67
+
+config SPL_LDSCRIPT
+	default "arch/arm/mach-omap2/u-boot-spl.lds"
+
+endif
