@@ -162,26 +162,6 @@
 					};
 				};
 
-				fdt-dtbo-k3-am67a-kontron-sa67-rtc-rv3032 {
-					description = "k3-am67a-kontron-sa67-rtc-rv3032.dtbo";
-					type = "flat_dt";
-					arch = "arm";
-					compression = "none";
-
-					ti-secure {
-						content = <&am67a_kontron_sa67_rtc_rv3032_dtbo>;
-						keyfile = "custMpk.pem";
-					};
-
-					am67a_kontron_sa67_rtc_rv3032_dtbo: blob-ext {
-						filename = "k3-am67a-kontron-sa67-rtc-rv3032.dtbo";
-					};
-
-					hash {
-						algo = "crc32";
-					};
-				};
-
 				fdt-dtbo-k3-am67a-kontron-sa67-rtc-rv8263 {
 					description = "k3-am67a-kontron-sa67-rtc-rv8263.dtbo";
 					type = "flat_dt";
@@ -212,7 +192,6 @@
 					loadables = "uboot";
 					fdt = "fdt-k3-am67a-kontron-sa67-base",
 					      "fdt-dtbo-k3-am67a-kontron-sa67-gbe1",
-					      "fdt-dtbo-k3-am67a-kontron-sa67-rtc-rv3032",
 					      "fdt-dtbo-k3-am67a-kontron-sa67-rtc-rv8263";
 				};
 
