@@ -155,6 +155,11 @@ int board_spl_fit_append_fdt_skip(const char *name)
 		if (ret)
 			return 1;
 		return !val;
+	} else if (!strcmp(name, "fdt-dtbo-k3-am67a-kontron-sa67-rtc-rv3032")) {
+		ret = sysinfo_get_bool(dev, BOARD_HAS_RTC_RV3032, &val);
+		if (ret)
+			return 1;
+		return !val;
 	} else if (!strcmp(name, "fdt-dtbo-k3-am67a-kontron-sa67-rtc-rv8263")) {
 		ret = sysinfo_get_bool(dev, BOARD_HAS_RTC_RV8263, &val);
 		if (ret)
